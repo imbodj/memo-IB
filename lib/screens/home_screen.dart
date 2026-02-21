@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../providers/theme_provider.dart';
 import '../data/themes_data.dart';
 import 'chat_screen.dart';
@@ -17,34 +18,16 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   late AnimationController _animationController;
-  late Animation<double> _fadeAnimation;
-  late Animation<Offset> _slideAnimation;
 
   final themes = mathThemes;
 
   @override
   void initState() {
     super.initState();
+
     _animationController = AnimationController(
-      duration: const Duration(milliseconds: 1500),
+      duration: const Duration(milliseconds: 1200),
       vsync: this,
-    );
-
-    _fadeAnimation = Tween<double>(begin: 0, end: 1).animate(
-      CurvedAnimation(
-        parent: _animationController,
-        curve: Curves.easeInOut,
-      ),
-    );
-
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.3),
-      end: Offset.zero,
-    ).animate(
-      CurvedAnimation(
-        parent: _animationController,
-        curve: Curves.easeOutBack,
-      ),
     );
 
     _animationController.forward();
@@ -90,10 +73,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 const SizedBox(height: 24),
                 ElevatedButton(
                   onPressed: () => Navigator.pop(context),
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16)),
-                  ),
                   child: const Text('Fermer'),
                 ),
               ],
@@ -108,6 +87,23 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
     final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    // ------------------------------
+    // RESPONSIVE GRID
+    // ------------------------------
+    final width = MediaQuery.of(context).size.width;
+
+    int crossAxisCount = 1;
+
+    if (width > 1400) {
+      crossAxisCount = 5;
+    } else if (width > 1100) {
+      crossAxisCount = 4;
+    } else if (width > 800) {
+      crossAxisCount = 3;
+    } else if (width > 600) {
+      crossAxisCount = 2;
+    }
 
     return Scaffold(
       body: Container(
@@ -127,247 +123,277 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           ),
         ),
         child: SafeArea(
-          child: Column(
-            children: [
-              // Header
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Memo IB',
-                          style: TextStyle(
-                            fontSize: 28,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                        Text(
-                          'Mathématiques AA',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.white70,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        IconButton(
-                          onPressed: () => _showAboutDialog(context, isDark),
-                          icon: const Icon(Icons.info_outline,
-                              color: Colors.white),
-                        ),
-                        IconButton(
-                          onPressed: themeProvider.toggleTheme,
-                          icon: Icon(
-                            isDark ? Icons.light_mode : Icons.dark_mode,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+          child: SingleChildScrollView(
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(
+                  maxWidth: 1400, // largeur max site web
                 ),
-              ),
-
-              // Bouton Chat
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton.icon(
-                    onPressed: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ChatScreen(),
+                child: Column(
+                  children: [
+                    //----------------------------------
+                    // HEADER
+                    //----------------------------------
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 16),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Memo IB',
+                                style: TextStyle(
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              Text(
+                                'Mathématiques AA',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.white70,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              IconButton(
+                                onPressed: () =>
+                                    _showAboutDialog(context, isDark),
+                                icon: const Icon(Icons.info_outline,
+                                    color: Colors.white),
+                              ),
+                              IconButton(
+                                onPressed: themeProvider.toggleTheme,
+                                icon: Icon(
+                                  isDark ? Icons.light_mode : Icons.dark_mode,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
-                    icon: const Icon(Icons.chat_bubble_outline),
-                    label: const Text('Résoudre des Maths'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: const Color(0xFF6C5CE7),
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16)),
-                    ),
-                  ),
-                ),
-              ),
 
-              const SizedBox(height: 24),
-
-              // 🔥 Scroll horizontal fonctionnel sur PC et mobile
-              SizedBox(
-                height: 380,
-                child: ScrollConfiguration(
-                  behavior: MyCustomScrollBehavior(), // 👈 ici
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    itemCount: themes.length,
-                    itemBuilder: (context, index) {
-                      final theme = themes[index];
-                      return SizedBox(
-                        width: 300,
-                        child: GestureDetector(
-                          onTap: () => Navigator.push(
+                    //----------------------------------
+                    // BOUTON CHAT
+                    //----------------------------------
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          onPressed: () => Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  ThemeDetailScreen(themeData: theme),
+                              builder: (_) => const ChatScreen(),
                             ),
                           ),
-                          child: Card(
+                          icon: const Icon(Icons.chat),
+                          label: const Text('Résoudre des Maths'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            foregroundColor: const Color(0xFF6C5CE7),
+                            padding: const EdgeInsets.symmetric(vertical: 16),
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20)),
-                            elevation: 6,
-                            margin: const EdgeInsets.symmetric(horizontal: 8),
-                            child: Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    width: 50,
-                                    height: 50,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(12),
-                                      gradient: const LinearGradient(
-                                        colors: [
-                                          Color(0xFF6C5CE7),
-                                          Color(0xFF74B9FF),
-                                        ],
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 30),
+
+                    //----------------------------------
+                    // GRID THEMES (RESPONSIVE)
+                    //----------------------------------
+                    Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: GridView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: themes.length,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: crossAxisCount,
+                          crossAxisSpacing: 20,
+                          mainAxisSpacing: 20,
+                          childAspectRatio: 0.9,
+                        ),
+                        itemBuilder: (context, index) {
+                          final theme = themes[index];
+
+                          return GestureDetector(
+                            onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) =>
+                                    ThemeDetailScreen(themeData: theme),
+                              ),
+                            ),
+                            child: Card(
+                              elevation: 8,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(22),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(18),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    //----------------------------------
+                                    // NUMBER ICON
+                                    //----------------------------------
+                                    Container(
+                                      width: 55,
+                                      height: 55,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(14),
+                                        gradient: const LinearGradient(
+                                          colors: [
+                                            Color(0xFF6C5CE7),
+                                            Color(0xFF74B9FF),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        '${index + 1}',
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold,
+                                      child: Center(
+                                        child: Text(
+                                          '${index + 1}',
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 22,
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                  const SizedBox(height: 12),
-                                  Text(
-                                    theme.title,
-                                    style: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 12),
-                                  Expanded(
-                                    child: Wrap(
-                                      spacing: 6,
-                                      runSpacing: 6,
-                                      children: theme.topics
-                                          .map(
-                                            (topic) => Container(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 8,
-                                                      vertical: 4),
-                                              decoration: BoxDecoration(
-                                                color: const Color(0xFF6C5CE7)
-                                                    .withOpacity(0.1),
-                                                borderRadius:
-                                                    BorderRadius.circular(8),
-                                              ),
-                                              child: Text(
-                                                topic,
-                                                style: const TextStyle(
-                                                    fontSize: 12,
-                                                    color: Color(0xFF6C5CE7)),
-                                              ),
-                                            ),
-                                          )
-                                          .toList(),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Container(
-                                    width: double.infinity,
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 12),
-                                    decoration: BoxDecoration(
-                                      gradient: const LinearGradient(
-                                        colors: [
-                                          Color(0xFF6C5CE7),
-                                          Color(0xFF74B9FF),
-                                        ],
+
+                                    const SizedBox(height: 16),
+
+                                    //----------------------------------
+                                    // TITLE
+                                    //----------------------------------
+                                    Text(
+                                      theme.title,
+                                      style: const TextStyle(
+                                        fontSize: 19,
+                                        fontWeight: FontWeight.bold,
                                       ),
-                                      borderRadius: BorderRadius.circular(12),
                                     ),
-                                    child: const Text(
-                                      'Voir le Résumé',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
+
+                                    const SizedBox(height: 12),
+
+                                    //----------------------------------
+                                    // TOPICS
+                                    //----------------------------------
+                                    Expanded(
+                                      child: Wrap(
+                                        spacing: 6,
+                                        runSpacing: 6,
+                                        children: theme.topics
+                                            .map(
+                                              (topic) => Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 8,
+                                                        vertical: 4),
+                                                decoration: BoxDecoration(
+                                                  color: const Color(0xFF6C5CE7)
+                                                      .withOpacity(0.1),
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                ),
+                                                child: Text(
+                                                  topic,
+                                                  style: const TextStyle(
+                                                    fontSize: 12,
+                                                    color: Color(0xFF6C5CE7),
+                                                  ),
+                                                ),
+                                              ),
+                                            )
+                                            .toList(),
+                                      ),
+                                    ),
+
+                                    const SizedBox(height: 12),
+
+                                    //----------------------------------
+                                    // BUTTON
+                                    //----------------------------------
+                                    Container(
+                                      width: double.infinity,
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 14),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(12),
+                                        gradient: const LinearGradient(
+                                          colors: [
+                                            Color(0xFF6C5CE7),
+                                            Color(0xFF74B9FF),
+                                          ],
+                                        ),
+                                      ),
+                                      child: const Text(
+                                        "Voir le résumé",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
                                           color: Colors.white,
-                                          fontWeight: FontWeight.w600),
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+
+                    //----------------------------------
+                    // BOOKLET BUTTON
+                    //----------------------------------
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          onPressed: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const BookletScreen(),
+                            ),
+                          ),
+                          icon: const Icon(Icons.menu_book),
+                          label: const Text("Booklet de Formules"),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            foregroundColor: const Color(0xFF00B894),
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
                             ),
                           ),
                         ),
-                      );
-                    },
-                  ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 40),
+                  ],
                 ),
               ),
-
-              const SizedBox(height: 24),
-
-              // Bouton Booklet
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton.icon(
-                    onPressed: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const BookletScreen()),
-                    ),
-                    icon: const Icon(Icons.menu_book),
-                    label: const Text('Booklet de Formules'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: const Color(0xFF00B894),
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16)),
-                    ),
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 20),
-            ],
+            ),
           ),
         ),
       ),
     );
   }
-}
-
-// 🌟 Scroll desktop & mobile
-class MyCustomScrollBehavior extends MaterialScrollBehavior {
-  @override
-  Set<PointerDeviceKind> get dragDevices => {
-        PointerDeviceKind.touch,
-        PointerDeviceKind.mouse,
-        PointerDeviceKind.trackpad,
-      };
 }
