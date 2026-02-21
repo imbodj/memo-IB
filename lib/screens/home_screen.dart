@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/theme_provider.dart';
@@ -201,122 +203,127 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
               const SizedBox(height: 24),
 
-              // Thèmes scroll horizontal
+              // 🔥 Scroll horizontal fonctionnel sur PC et mobile
               SizedBox(
                 height: 380,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  itemCount: themes.length,
-                  itemBuilder: (context, index) {
-                    final theme = themes[index];
-                    return SizedBox(
-                      width: 300,
-                      child: GestureDetector(
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                ThemeDetailScreen(themeData: theme),
+                child: ScrollConfiguration(
+                  behavior: MyCustomScrollBehavior(), // 👈 ici
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    itemCount: themes.length,
+                    itemBuilder: (context, index) {
+                      final theme = themes[index];
+                      return SizedBox(
+                        width: 300,
+                        child: GestureDetector(
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  ThemeDetailScreen(themeData: theme),
+                            ),
                           ),
-                        ),
-                        child: Card(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20)),
-                          elevation: 6,
-                          margin: const EdgeInsets.symmetric(horizontal: 8),
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  width: 50,
-                                  height: 50,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(12),
-                                    gradient: const LinearGradient(
-                                      colors: [
-                                        Color(0xFF6C5CE7),
-                                        Color(0xFF74B9FF),
-                                      ],
+                          child: Card(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20)),
+                            elevation: 6,
+                            margin: const EdgeInsets.symmetric(horizontal: 8),
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    width: 50,
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(12),
+                                      gradient: const LinearGradient(
+                                        colors: [
+                                          Color(0xFF6C5CE7),
+                                          Color(0xFF74B9FF),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      '${index + 1}',
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
+                                    child: Center(
+                                      child: Text(
+                                        '${index + 1}',
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                                const SizedBox(height: 12),
-                                Text(
-                                  theme.title,
-                                  style: const TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const SizedBox(height: 12),
-                                Expanded(
-                                  child: Wrap(
-                                    spacing: 6,
-                                    runSpacing: 6,
-                                    children: theme.topics
-                                        .map(
-                                          (topic) => Container(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 8, vertical: 4),
-                                            decoration: BoxDecoration(
-                                              color: const Color(0xFF6C5CE7)
-                                                  .withOpacity(0.1),
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                            ),
-                                            child: Text(
-                                              topic,
-                                              style: const TextStyle(
-                                                  fontSize: 12,
-                                                  color: Color(0xFF6C5CE7)),
-                                            ),
-                                          ),
-                                        )
-                                        .toList(),
-                                  ),
-                                ),
-                                const SizedBox(height: 8),
-                                Container(
-                                  width: double.infinity,
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 12),
-                                  decoration: BoxDecoration(
-                                    gradient: const LinearGradient(
-                                      colors: [
-                                        Color(0xFF6C5CE7),
-                                        Color(0xFF74B9FF),
-                                      ],
+                                  const SizedBox(height: 12),
+                                  Text(
+                                    theme.title,
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
                                     ),
-                                    borderRadius: BorderRadius.circular(12),
                                   ),
-                                  child: const Text(
-                                    'Voir le Résumé',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w600),
+                                  const SizedBox(height: 12),
+                                  Expanded(
+                                    child: Wrap(
+                                      spacing: 6,
+                                      runSpacing: 6,
+                                      children: theme.topics
+                                          .map(
+                                            (topic) => Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 8,
+                                                      vertical: 4),
+                                              decoration: BoxDecoration(
+                                                color: const Color(0xFF6C5CE7)
+                                                    .withOpacity(0.1),
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                              ),
+                                              child: Text(
+                                                topic,
+                                                style: const TextStyle(
+                                                    fontSize: 12,
+                                                    color: Color(0xFF6C5CE7)),
+                                              ),
+                                            ),
+                                          )
+                                          .toList(),
+                                    ),
                                   ),
-                                ),
-                              ],
+                                  const SizedBox(height: 8),
+                                  Container(
+                                    width: double.infinity,
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 12),
+                                    decoration: BoxDecoration(
+                                      gradient: const LinearGradient(
+                                        colors: [
+                                          Color(0xFF6C5CE7),
+                                          Color(0xFF74B9FF),
+                                        ],
+                                      ),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: const Text(
+                                      'Voir le Résumé',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w600),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
               ),
 
@@ -353,4 +360,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       ),
     );
   }
+}
+
+// 🌟 Scroll desktop & mobile
+class MyCustomScrollBehavior extends MaterialScrollBehavior {
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+        PointerDeviceKind.touch,
+        PointerDeviceKind.mouse,
+        PointerDeviceKind.trackpad,
+      };
 }

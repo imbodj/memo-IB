@@ -15,6 +15,16 @@ void main() {
   runApp(const MyApp());
 }
 
+// 🌟 Ici, on crée la classe pour gérer le scroll sur desktop et mobile
+class MyCustomScrollBehavior extends MaterialScrollBehavior {
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+        PointerDeviceKind.touch,
+        PointerDeviceKind.mouse,
+        PointerDeviceKind.trackpad,
+      };
+}
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -31,14 +41,8 @@ class MyApp extends StatelessWidget {
             darkTheme: AppTheme.darkTheme,
             themeMode: themeProvider.themeMode,
 
-            // 🔥 correction scroll desktop web
-            scrollBehavior: MaterialScrollBehavior().copyWith(
-              dragDevices: {
-                PointerDeviceKind.touch,
-                PointerDeviceKind.mouse,
-                PointerDeviceKind.trackpad,
-              },
-            ),
+            // 🔥 Utilisation de la classe personnalisée pour le scroll
+            scrollBehavior: MyCustomScrollBehavior(),
 
             home: const HomeScreen(),
           );
