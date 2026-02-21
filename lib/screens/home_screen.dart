@@ -144,8 +144,8 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       border: Border.all(
                           color: const Color(0xFF6C5CE7).withOpacity(0.2)),
                     ),
-                    child: Column(
-                      children: const [
+                    child: const Column(
+                      children: [
                         Icon(Icons.person, color: Color(0xFF6C5CE7), size: 24),
                         SizedBox(height: 8),
                         Text(
@@ -318,11 +318,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               const SizedBox(height: 20),
 
               // Liste des thèmes
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.0),
                 child: Text(
                   'Thèmes du Programme',
-                  style: const TextStyle(
+                  style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                       color: Colors.white),
