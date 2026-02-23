@@ -1,0 +1,35 @@
+name: memo_ib
+description: Application de mathématiques IB AA pour étudiants
+publish_to: 'none' # Retirez cette ligne si vous souhaitez publier sur pub.dev
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.10.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  provider: ^6.1.2
+  flutter_math_fork: ^0.7.0
+  shared_preferences: ^2.2.2
+  math_expressions: ^2.4.0
+  uuid: ^4.5.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.1
+  flutter_launcher_icons: ^0.14.4
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/memo_ib.png"
+  adaptive_icon_background: "#2196F3"  # Fond bleu pour l'icône adaptative Android
+  adaptive_icon_foreground: "assets/images/memo_ib.png"
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/memo_ib.png
