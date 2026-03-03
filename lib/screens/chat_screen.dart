@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
-import 'package:memo_ib/models/message.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import 'message.dart';
 import 'solver.dart';
 
 class ChatScreen extends StatefulWidget {
